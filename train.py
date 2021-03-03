@@ -18,13 +18,15 @@ print("Tensorflow version " + tf.__version__)
 
 IMAGE_SIZE = [512, 512] # at this size, a GPU will run out of memory. Use the TPU
 EPOCHS = 15
+#EPOCHS = 1
 BATCH_SIZE = 4
 
 NUM_TRAINING_IMAGES = 21397
 NUM_TEST_IMAGES = 1
 STEPS_PER_EPOCH = NUM_TRAINING_IMAGES // BATCH_SIZE
 
-FILENAMES = tf.io.gfile.glob('/mnt/disk2/dl_data/cassava_leaf_disease_classification/train_resize_tfrecords/ld_train*.tfrec')
+FILENAMES = tf.io.gfile.glob('/home/hong/dl_data/cassava_leaf_disease_classification/train_resize_tfrecords/ld_train*.tfrec')
+
 
 def decode_image(image_data):
     image = tf.image.decode_jpeg(image_data, channels=3)
@@ -194,6 +196,7 @@ print("Learning rate schedule: {:.3g} to {:.3g} to {:.3g}".format(y[0], max(y), 
 
 skf = KFold(n_splits=5, shuffle=True, random_state=2020)
 
+results_list = []
 
 for fold, (train_idx, val_idx) in enumerate(skf.split(range(len(FILENAMES)))):
     print(f'Fold ::::: {fold}')
@@ -237,3 +240,11 @@ for fold, (train_idx, val_idx) in enumerate(skf.split(range(len(FILENAMES)))):
                              callbacks=[learning_rate_callback, checkpoint],
                              validation_data=data_val)
 
+    model1.load_weights('ckpt/effB3-fold-%i.h5' % fold)
+
+    results = model1.evaluate(data_val)
+    results_list.append(results[1])
+
+
+print(f'Result ::: {results_list}')
+print(f'Result ::: {np.mean(results_list)}')

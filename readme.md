@@ -1,6 +1,7 @@
 # train
     - efficientNet
     - default augmentation
+    - CV : 0.8820861577987671
 
 # train_02
     - efficientNet
