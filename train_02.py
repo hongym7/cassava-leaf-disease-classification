@@ -238,7 +238,7 @@ for fold, (train_idx, val_idx) in enumerate(skf.split(range(len(FILENAMES)))):
                              callbacks=[learning_rate_callback, checkpoint],
                              validation_data=data_val)
 
-    model1.load_weights('ckpt/effB3-fold-%i.h5' % fold)
+    model1.load_weights('ckpt/effB4-crop_aug-fold-%i.h5' % fold)
 
     results = model1.evaluate(data_val)
     results_list.append(results[1])
